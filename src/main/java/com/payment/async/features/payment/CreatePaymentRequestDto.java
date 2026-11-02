@@ -1,6 +1,10 @@
 package com.payment.async.features.payment;
 
-import java.util.UUID;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-public record PaymentRequestDto(UUID idempotencyKey, Long amountCents) {
+public record CreatePaymentRequestDto(
+        @NotNull
+        @Positive
+        Long amountCents) {
 }
