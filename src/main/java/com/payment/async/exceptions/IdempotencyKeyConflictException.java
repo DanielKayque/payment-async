@@ -1,7 +1,7 @@
 package com.payment.async.exceptions;
 
-public class ArgumentConflictException extends RuntimeException {
-    public ArgumentConflictException(String message) {
+public class IdempotencyKeyConflictException extends RuntimeException {
+    public IdempotencyKeyConflictException(String message) {
         super(message);
     }
 }
