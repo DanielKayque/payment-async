@@ -1,7 +1,6 @@
 package com.payment.async.security;
 
-import com.payment.async.features.payment.CreatePaymentRequestDto;
-import org.springframework.context.annotation.Bean;
+import com.payment.async.features.payment.createPayment.CreatePaymentRequestDto;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

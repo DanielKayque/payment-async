@@ -12,4 +12,8 @@ public class ExceptionGlobalHandler {
     public ResponseEntity<ErrorResponseDto> handleIdempotencyKeyConflictException(IdempotencyKeyConflictException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponseDto(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
 }

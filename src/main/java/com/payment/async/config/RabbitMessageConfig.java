@@ -1,4 +1,4 @@
-package com.payment.async.Config;
+package com.payment.async.config;
 
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;

@@ -1,8 +1,9 @@
-package com.payment.async.features.payment;
+package com.payment.async.features.payment.createPayment;
 
 import com.payment.async.exceptions.IdempotencyKeyConflictException;
-import com.payment.async.persistance.entities.PaymentEntity;
-import com.payment.async.persistance.repository.PaymentRepository;
+import com.payment.async.infra.rabbitmq.PaymentProducer;
+import com.payment.async.infra.persistance.entities.PaymentEntity;
+import com.payment.async.infra.persistance.repository.PaymentRepository;
 import com.payment.async.security.GenerateHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.UUID;
 public class PaymentUseCase {
     @Autowired
     private PaymentRepository repository;
+    @Autowired
+    private PaymentProducer producer;
 
     @Transactional
     public CreatePaymentResponseDto execute(UUID idempotencyKey, CreatePaymentRequestDto dto){
@@ -39,12 +42,20 @@ public class PaymentUseCase {
                 .id(UUID.randomUUID())
                 .amountCents(dto.amountCents())
                 .idempotencyKey(idempotencyKey)
+                .status(PaymentStatus.PENDING)
                 .requestHash(GenerateHash.generateHash(dto))
                 .createdAt(Instant.now())
                 .updatedAt(Instant.now())
                 .build();
 
         PaymentEntity entity = repository.save(paymentEntity);
+
+        PaymentCreatedEvent paymentCreatedEvent = new PaymentCreatedEvent(paymentEntity.getId(),
+                BigDecimal.valueOf(paymentEntity.getAmountCents(), 2),
+                paymentEntity.getCreatedAt(),
+                paymentEntity.getStatus());
+
+        producer.publish(paymentCreatedEvent);
 
         return new CreatePaymentResponseDto(BigDecimal.valueOf(entity.getAmountCents(), 2));
     }
