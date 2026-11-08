@@ -5,7 +5,6 @@ import com.payment.async.features.payment.processPayment.ProcessPaymentUseCase;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class PaymentConsumer {
@@ -14,10 +13,7 @@ public class PaymentConsumer {
     public ProcessPaymentUseCase useCase;
 
     @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
-    @Transactional
     public void consume(PaymentCreatedEvent event){
-        //TODO: Lógica do que o consumidor irá fazer
-
         useCase.execute(event);
     }
 }

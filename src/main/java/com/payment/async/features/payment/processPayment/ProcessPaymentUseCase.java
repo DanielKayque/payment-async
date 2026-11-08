@@ -2,6 +2,7 @@ package com.payment.async.features.payment.processPayment;
 
 import com.payment.async.features.payment.createPayment.PaymentCreatedEvent;
 import com.payment.async.features.payment.createPayment.PaymentStatus;
+import com.payment.async.infra.persistance.entities.OutboxEventEntity;
 import com.payment.async.infra.persistance.entities.PaymentEntity;
 import com.payment.async.infra.persistance.out.AuthorizationClient;
 import com.payment.async.infra.persistance.repository.PaymentRepository;

@@ -3,6 +3,8 @@ package com.payment.async.infra.rabbitmq;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Queue;
@@ -11,7 +13,7 @@ import org.springframework.amqp.core.Queue;
 public class RabbitMQConfig {
     public static final String PAYMENT_QUEUE = "payment.processing";
     public static final String PAYMENT_EXCHANGE = "payment.exchange";
-    public static final String PAYMENT_ROUTING_KEY = "paymenct.created";
+    public static final String PAYMENT_ROUTING_KEY = "payment.created";
 
     @Bean
     public Queue paymentQueue(){
@@ -24,10 +26,15 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding relationship(Queue queue, DirectExchange swap){
+    public Binding binding(Queue queue, DirectExchange exchange){
         return BindingBuilder
                 .bind(paymentQueue())
                 .to(paymentExchange())
                 .with(PAYMENT_ROUTING_KEY);
+    }
+
+    @Bean
+    public MessageConverter rabbitMessageConverter(){
+        return new JacksonJsonMessageConverter();
     }
 }

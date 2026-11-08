@@ -1,25 +1,34 @@
 package com.payment.async.features.payment.createPayment;
 
 import com.payment.async.exceptions.IdempotencyKeyConflictException;
-import com.payment.async.infra.rabbitmq.PaymentProducer;
+import com.payment.async.infra.persistance.entities.OutboxEventEntity;
+import com.payment.async.infra.persistance.repository.OutboxEventRepository;
 import com.payment.async.infra.persistance.entities.PaymentEntity;
 import com.payment.async.infra.persistance.repository.PaymentRepository;
 import com.payment.async.security.GenerateHash;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class PaymentUseCase {
-    @Autowired
-    private PaymentRepository repository;
-    @Autowired
-    private PaymentProducer producer;
+    private final PaymentRepository repository;
+
+    private final OutboxEventRepository outboxEventRepository;
+
+    private final ObjectMapper objectMapper;
+
+    public PaymentUseCase(ObjectMapper objectMapper, OutboxEventRepository outboxEventRepository, PaymentRepository repository) {
+        this.objectMapper = objectMapper;
+        this.outboxEventRepository = outboxEventRepository;
+        this.repository = repository;
+    }
 
     @Transactional
     public CreatePaymentResponseDto execute(UUID idempotencyKey, CreatePaymentRequestDto dto){
@@ -55,7 +64,19 @@ public class PaymentUseCase {
                 paymentEntity.getCreatedAt(),
                 paymentEntity.getStatus());
 
-        producer.publish(paymentCreatedEvent);
+        Map<String, Object> payload = objectMapper.convertValue(paymentCreatedEvent, Map.class);
+
+        OutboxEventEntity eventEntity = OutboxEventEntity.builder()
+                .id(UUID.randomUUID())
+                .aggregateId(paymentEntity.getId())
+                .createdAt(Instant.now())
+                .payload(payload)
+                .attempts(0)
+                .publishedAt(null)
+                .eventType("payment.created")
+                .build();
+
+        outboxEventRepository.save(eventEntity);
 
         return new CreatePaymentResponseDto(BigDecimal.valueOf(entity.getAmountCents(), 2));
     }
