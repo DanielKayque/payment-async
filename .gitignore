@@ -40,3 +40,5 @@ out/
 .env
 postgres-data/
 *.md
+!README.md
+.gradle-home/

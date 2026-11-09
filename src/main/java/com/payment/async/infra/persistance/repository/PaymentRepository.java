@@ -1,6 +1,6 @@
-package com.payment.async.persistance.repository;
+package com.payment.async.infra.persistance.repository;
 
-import com.payment.async.persistance.entities.PaymentEntity;
+import com.payment.async.infra.persistance.entities.PaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

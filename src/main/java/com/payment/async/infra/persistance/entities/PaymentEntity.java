@@ -1,5 +1,6 @@
-package com.payment.async.persistance.entities;
+package com.payment.async.infra.persistance.entities;
 
+import com.payment.async.features.payment.createPayment.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,4 +35,13 @@ public class PaymentEntity {
 
     @Column(name = "amount_cents", nullable = false)
     private Long amountCents;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus status;
+
+    public void changeStatus(PaymentStatus status){
+        this.status = status;
+        this.updatedAt = Instant.now();
+    }
 }
