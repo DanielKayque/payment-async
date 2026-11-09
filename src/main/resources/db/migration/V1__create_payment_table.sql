@@ -1,0 +1,8 @@
+CREATE TABLE payments(
+    id UUID PRIMARY KEY,
+    idempotency_key UUID UNIQUE NOT NULL,
+    request_hash TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    amount_cents BIGINT NOT NULL check ( amount_cents > 0 )
+);

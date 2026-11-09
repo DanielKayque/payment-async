@@ -36,4 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Local Environment ###
 .env
+postgres-data/
+*.md
+!README.md
+.gradle-home/
