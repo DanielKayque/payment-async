@@ -57,6 +57,6 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter rabbitMessageConverter(){
-        return new JacksonJsonMessageConverter();
+        return new JacksonJsonMessageConverter("com.payment.async.features.payment.createPayment");
     }
 }

@@ -16,12 +16,6 @@ public class PaymentConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
     public void consume(PaymentCreatedEvent event) throws Exception{
-
-        try{
-             useCase.execute(event);
-        } catch (Exception ex){
-            log.error("Error processing payment: {}", event.paymentId(), ex);
-            throw ex;
-        }
+        useCase.execute(event);
     }
 }
