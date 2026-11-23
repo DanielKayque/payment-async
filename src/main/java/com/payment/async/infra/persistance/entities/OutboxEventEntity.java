@@ -47,7 +47,6 @@ public class OutboxEventEntity {
 
     public void markAsPublished(){
         this.publishedAt = Instant.now();
-        this.attempts++;
     }
 
     public void incrementAttempts(){
